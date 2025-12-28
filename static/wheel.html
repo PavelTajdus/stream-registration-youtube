@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Losovací kolo | Stream Soutěž 2025</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0c0c0c;
+            --surface: #161616;
+            --border: #262626;
+            --text: #fafafa;
+            --text-secondary: #a0a0a0;
+            --green: #22c55e;
+            --green-dark: #16a34a;
+            --red: #ef4444;
+            --amber: #f59e0b;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .wheel-container {
+            position: relative;
+            margin: 20px 0 30px;
+        }
+
+        #wheel {
+            border-radius: 50%;
+            filter: drop-shadow(0 0 40px rgba(0,0,0,0.5));
+        }
+
+        .pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .pointer::before {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 28px solid var(--green);
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        button {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        #spinBtn {
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            background: var(--green);
+            color: #fff;
+        }
+
+        #spinBtn:hover:not(:disabled) {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        #reloadBtn {
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            background: var(--surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        #reloadBtn:hover:not(:disabled) {
+            border-color: var(--text-secondary);
+            color: var(--text);
+        }
+
+        /* Winner Panel */
+        .winner {
+            margin-top: 40px;
+            padding: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            animation: winnerReveal 0.5s ease-out;
+            min-width: 380px;
+        }
+
+        @keyframes winnerReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .winner-label {
+            font-size: 0.75rem;
+            color: var(--amber);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .winner .email {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .winner .name {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .code-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        #revealCodeBtn {
+            background: var(--bg);
+            color: var(--text);
+            padding: 0.875rem 2rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        #revealCodeBtn:hover {
+            border-color: var(--text-secondary);
+        }
+
+        .code {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            margin-top: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg);
+            border: 2px solid var(--green);
+            border-radius: 8px;
+            color: var(--green);
+            animation: codeReveal 0.3s ease-out;
+            display: inline-block;
+        }
+
+        @keyframes codeReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .stats {
+            margin-top: 24px;
+            padding: 10px 20px;
+            background: var(--surface);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .stats span {
+            color: var(--text);
+            font-weight: 600;
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* Login Form */
+        .login-form {
+            background: var(--surface);
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .login-form h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-form input {
+            font-family: 'DM Mono', monospace;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            width: 280px;
+            margin-bottom: 1rem;
+            transition: border-color 0.15s;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+        }
+
+        .login-form input::placeholder {
+            color: #505050;
+        }
+
+        #loginBtn {
+            background: var(--green);
+            color: #fff;
+            padding: 0.875rem 2.5rem;
+            font-size: 1rem;
+        }
+
+        #loginBtn:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .error {
+            color: var(--red);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Sponsors Section */
+        .sponsors {
+            margin-top: auto;
+            padding-top: 60px;
+            text-align: center;
+        }
+
+        .sponsors-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .sponsors-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .sponsor-link {
+            display: flex;
+            align-items: center;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .sponsor-link:hover {
+            opacity: 1;
+        }
+
+        .sponsor-link img {
+            height: 36px;
+            width: auto;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            flex: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 500px) {
+            .winner {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .code {
+                font-size: 1.75rem;
+                padding: 1rem 1.5rem;
+            }
+
+            .sponsors-list {
+                gap: 2rem;
+            }
+
+            .sponsor-link img {
+                height: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginSection" class="login-form">
+        <h1>Admin Access</h1>
+        <input type="password" id="secretInput" placeholder="Zadejte klíč...">
+        <br>
+        <button id="loginBtn">Přihlásit</button>
+        <p id="loginError" class="error hidden"></p>
+    </div>
+
+    <div id="app" class="hidden">
+        <h1 class="page-title">Losovací kolo</h1>
+        <p class="page-subtitle">Poslední Stream Roku 2025</p>
+
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <canvas id="wheel" width="500" height="500"></canvas>
+        </div>
+
+        <div class="controls">
+            <button id="spinBtn">Roztočit!</button>
+            <button id="reloadBtn">Načíst znovu</button>
+        </div>
+
+        <div id="winner" class="winner hidden">
+            <div class="winner-label">Výherce</div>
+            <div class="email" id="winnerEmail"></div>
+            <div class="name" id="winnerName"></div>
+            <div class="code-section">
+                <button id="revealCodeBtn">Zobrazit ověřovací kód</button>
+                <div id="winnerCode" class="code hidden"></div>
+            </div>
+        </div>
+
+        <p class="stats">Počet účastníků: <span id="count">0</span></p>
+
+        <div class="sponsors">
+            <div class="sponsors-label">Sponzoři soutěže</div>
+            <div class="sponsors-list">
+                <a href="https://hotend.cz" target="_blank" class="sponsor-link">
+                    <img src="/static/images/hotend-logo.svg" alt="Hotend.cz">
+                </a>
+                <a href="https://printerhive.com" target="_blank" class="sponsor-link">
+                    <img src="/static/images/printerhive_logo_white.svg" alt="Printerhive">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+            '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+            '#F8B500', '#FF6F61', '#6B5B95', '#88B04B', '#F7CAC9'
+        ];
+
+        let participants = [];
+        let secret = '';
+        let spinning = false;
+        let currentRotation = 0;
+        let currentWinner = null;
+
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const reloadBtn = document.getElementById('reloadBtn');
+        const revealCodeBtn = document.getElementById('revealCodeBtn');
+
+        // Login
+        document.getElementById('loginBtn').addEventListener('click', tryLogin);
+        document.getElementById('secretInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') tryLogin();
+        });
+
+        // Check for stored session
+        (async function checkStoredSession() {
+            const stored = sessionStorage.getItem('wheel_secret');
+            if (stored) {
+                try {
+                    const res = await fetch(`/api/participants?secret=${encodeURIComponent(stored)}`);
+                    if (res.ok) {
+                        secret = stored;
+                        document.getElementById('loginSection').classList.add('hidden');
+                        document.getElementById('app').classList.remove('hidden');
+                        loadParticipants();
+                    } else {
+                        sessionStorage.removeItem('wheel_secret');
+                    }
+                } catch (e) {
+                    sessionStorage.removeItem('wheel_secret');
+                }
+            }
+        })();
+
+        async function tryLogin() {
+            secret = document.getElementById('secretInput').value;
+            try {
+                const res = await fetch(`/api/participants?secret=${encodeURIComponent(secret)}`);
+                if (res.ok) {
+                    sessionStorage.setItem('wheel_secret', secret);
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('app').classList.remove('hidden');
+                    loadParticipants();
+                } else {
+                    document.getElementById('loginError').textContent = 'Neplatný klíč';
+                    document.getElementById('loginError').classList.remove('hidden');
+                }
+            } catch (e) {
+                document.getElementById('loginError').textContent = 'Chyba připojení';
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        async function loadParticipants() {
+            try {
+                const res = await fetch(`/api/participants?secret=${encodeURIComponent(secret)}`);
+                const data = await res.json();
+                participants = data;
+                document.getElementById('count').textContent = participants.length;
+                drawWheel();
+            } catch (e) {
+                console.error('Failed to load participants:', e);
+            }
+        }
+
+        function drawWheel(rotation = 0) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 10;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+
+            if (participants.length === 0) {
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = '#161616';
+                ctx.fill();
+                ctx.strokeStyle = '#262626';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillStyle = '#a0a0a0';
+                ctx.font = '500 16px DM Sans';
+                ctx.textAlign = 'center';
+                ctx.fillText('Žádní účastníci', 0, 0);
+                ctx.restore();
+                return;
+            }
+
+            const sliceAngle = (2 * Math.PI) / participants.length;
+
+            participants.forEach((p, i) => {
+                const startAngle = i * sliceAngle;
+                const endAngle = startAngle + sliceAngle;
+
+                // Draw slice
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.strokeStyle = '#0c0c0c';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw text (email)
+                ctx.save();
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#000';
+                ctx.font = '500 11px DM Mono';
+
+                const displayText = p.email.length > 20 ? p.email.substring(0, 17) + '...' : p.email;
+                ctx.fillText(displayText, radius - 15, 4);
+                ctx.restore();
+            });
+
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(0, 0, 32, 0, 2 * Math.PI);
+            ctx.fillStyle = '#0c0c0c';
+            ctx.fill();
+            ctx.strokeStyle = '#262626';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // Normalize angle to 0 - 2*PI range
+        function normalizeAngle(angle) {
+            return ((angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        }
+
+        function spin() {
+            if (spinning || participants.length === 0) return;
+
+            spinning = true;
+            spinBtn.disabled = true;
+            reloadBtn.disabled = true;
+            document.getElementById('winner').classList.add('hidden');
+            document.getElementById('winnerCode').classList.add('hidden');
+            revealCodeBtn.classList.remove('hidden');
+
+            const sliceAngle = (2 * Math.PI) / participants.length;
+
+            // Fair spin: generate random rotation, then determine winner from where it lands
+            const extraSpins = 10 + Math.random() * 5;
+            const randomAngle = Math.random() * 2 * Math.PI;
+            const totalRotation = currentRotation + extraSpins * 2 * Math.PI + randomAngle;
+
+            const duration = 7000;
+            const startTime = Date.now();
+            const startRotation = currentRotation;
+
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function (ease out cubic)
+                const eased = 1 - Math.pow(1 - progress, 3);
+
+                currentRotation = startRotation + (totalRotation - startRotation) * eased;
+                drawWheel(currentRotation);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    spinning = false;
+                    spinBtn.disabled = false;
+                    reloadBtn.disabled = false;
+
+                    // Determine winner based on where wheel stopped
+                    const pointerAngle = 3 * Math.PI / 2;
+                    const normalizedRotation = normalizeAngle(currentRotation);
+                    const wheelAngleAtPointer = normalizeAngle(pointerAngle - normalizedRotation);
+                    const winnerIndex = Math.floor(wheelAngleAtPointer / sliceAngle);
+
+                    // Show winner
+                    currentWinner = participants[winnerIndex];
+                    document.getElementById('winnerEmail').textContent = currentWinner.email;
+                    document.getElementById('winnerName').textContent = currentWinner.name;
+                    document.getElementById('winnerCode').textContent = currentWinner.code;
+                    document.getElementById('winner').classList.remove('hidden');
+                }
+            }
+
+            animate();
+        }
+
+        function revealCode() {
+            revealCodeBtn.classList.add('hidden');
+            document.getElementById('winnerCode').classList.remove('hidden');
+        }
+
+        spinBtn.addEventListener('click', spin);
+        reloadBtn.addEventListener('click', loadParticipants);
+        revealCodeBtn.addEventListener('click', revealCode);
+
+        drawWheel();
+    </script>
+</body>
+</html>

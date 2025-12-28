@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poslední Stream Roku 2025 | Hotend.cz</title>
+    <meta name="description" content="Přijď na poslední stream roku 2025 a vyhraj 3D tiskárnu Bambulab A1 Combo!">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0c0c0c;
+            --surface: #161616;
+            --border: #262626;
+            --text: #fafafa;
+            --text-secondary: #a0a0a0;
+            --accent: #e8e8e8;
+            --green: #22c55e;
+            --green-dark: #16a34a;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --blue: #3b82f6;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        .header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--red);
+            letter-spacing: 0.02em;
+            margin-bottom: 1.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 8px 14px;
+            border-radius: 100px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--red);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        h1 {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .subtitle a {
+            color: var(--green);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .subtitle a:hover {
+            color: var(--green-dark);
+        }
+
+        .countdown-section {
+            margin-bottom: 4rem;
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .countdown-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.75rem;
+            font-weight: 500;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .countdown-unit {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .prize-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prize-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--amber);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .prize-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .prize-value {
+            font-size: 0.9rem;
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .prize-note {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .form-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .form-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .form-header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            color: var(--text);
+            font-family: inherit;
+            transition: border-color 0.15s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+        }
+
+        .form-group input::placeholder {
+            color: #505050;
+        }
+
+        .checkbox-group {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 0.5rem 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--text);
+            flex-shrink: 0;
+        }
+
+        .checkbox-group label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .checkbox-group a {
+            color: var(--text);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-message h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--green);
+        }
+
+        .success-message p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .code-box {
+            background: var(--bg);
+            border: 2px solid var(--green);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-label {
+            font-size: 0.75rem;
+            color: var(--green);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .code-value {
+            font-family: 'DM Mono', monospace;
+            font-size: 2rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            color: var(--green);
+        }
+
+        .code-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .links-section {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 4rem;
+        }
+
+        .link-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.875rem 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .link-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .link-btn.youtube:hover {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .link-btn.youtube svg {
+            color: #ef4444;
+        }
+
+        .link-btn.discord:hover {
+            border-color: #5865F2;
+            background: rgba(88, 101, 242, 0.1);
+        }
+
+        .link-btn.discord svg {
+            color: #5865F2;
+        }
+
+        .link-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sponsors-section {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .sponsors-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .sponsors-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .sponsor-link {
+            display: flex;
+            align-items: center;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .sponsor-link:hover {
+            opacity: 1;
+        }
+
+        .sponsor-link img {
+            height: 40px;
+            width: auto;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 2.5rem 1.25rem;
+            }
+
+            .countdown {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0.5rem;
+            }
+
+            .countdown-item {
+                min-width: unset;
+                padding: 0.75rem;
+            }
+
+            .countdown-number {
+                font-size: 1.5rem;
+            }
+
+            .links-section {
+                flex-direction: column;
+            }
+
+            .code-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="live-badge">
+                <span class="live-dot"></span>
+                29. prosince 2025 v 19:00
+            </div>
+            <h1>Poslední stream roku 2025</h1>
+            <p class="subtitle">Přijď na velké losování a vyhraj. Stačí se registrovat a být na <a href="https://youtube.com/live/A5nt3ERlLVk" target="_blank">streamu</a>.</p>
+        </header>
+
+        <section class="countdown-section">
+            <div class="countdown-label">Stream začíná za</div>
+            <div class="countdown" id="countdown">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="days">00</div>
+                    <div class="countdown-unit">Dní</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="hours">00</div>
+                    <div class="countdown-unit">Hodin</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="minutes">00</div>
+                    <div class="countdown-unit">Minut</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="seconds">00</div>
+                    <div class="countdown-unit">Sekund</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="prize-section">
+            <div class="prize-label">Hlavní cena</div>
+            <h2 class="prize-title">Bambulab A1 Combo</h2>
+            <p class="prize-value">Hodnota cca 15 000 Kč</p>
+            <p class="prize-note">+ další ceny budou oznámeny během streamu</p>
+        </section>
+
+        <section class="sponsors-section">
+            <div class="sponsors-label">Sponzoři soutěže</div>
+            <div class="sponsors-list">
+                <a href="https://hotend.cz" target="_blank" class="sponsor-link">
+                    <img src="/static/images/hotend-logo.svg" alt="Hotend.cz">
+                </a>
+                <a href="https://printerhive.com" target="_blank" class="sponsor-link">
+                    <img src="/static/images/printerhive_logo_white.svg" alt="Printerhive">
+                </a>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <div class="form-header">
+                <h2>Registrace do soutěže</h2>
+                <p>Vyplň formulář a buď na streamu.</p>
+            </div>
+            
+            <form id="registrationForm" class="form-grid">
+                <div class="form-group">
+                    <label for="name">Jméno a příjmení</label>
+                    <input type="text" id="name" name="name" placeholder="Jan Novák" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="jan@example.cz" required>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="gdpr" name="gdpr" required>
+                    <label for="gdpr">Souhlasím se zpracováním osobních údajů za účelem soutěže a případného zaslání výhry.</label>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">Chci dostávat novinky od <a href="https://hotend.cz" target="_blank">Hotend.cz</a></label>
+                </div>
+                
+                <button type="submit" class="submit-btn">Registrovat se</button>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                <h3>Registrace úspěšná!</h3>
+                <div class="code-box">
+                    <div class="code-label">Tvůj ověřovací kód</div>
+                    <div class="code-value" id="userCode">------</div>
+                </div>
+                <p>Kód ti přišel i na email. Při losování ho budeš potřebovat pro ověření.</p>
+                <p class="code-hint">Uvidíme se na streamu 29. 12. v 19:00</p>
+            </div>
+        </section>
+
+        <section class="links-section">
+            <a href="https://youtube.com/live/A5nt3ERlLVk" target="_blank" class="link-btn youtube">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                YouTube
+            </a>
+            <a href="https://discord.com/invite/DbZ7uKzDAa" target="_blank" class="link-btn discord">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+                Discord
+            </a>
+        </section>
+
+    </div>
+
+    <script>
+        const streamDate = new Date('2025-12-29T19:00:00+01:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = streamDate - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = '<p style="color:var(--text-secondary)">Stream právě běží!</p>';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        const form = document.getElementById('registrationForm');
+        const successMessage = document.getElementById('successMessage');
+        const submitBtn = form.querySelector('.submit-btn');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registruji...';
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        newsletter: document.getElementById('newsletter').checked
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Chyba při registraci');
+                }
+
+                document.getElementById('userCode').textContent = data.code;
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+                
+            } catch (error) {
+                alert(error.message || 'Něco se pokazilo. Zkus to znovu.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Registrovat se';
+            }
+        });
+    </script>
+</body>
+</html>
