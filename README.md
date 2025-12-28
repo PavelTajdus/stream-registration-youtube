@@ -17,11 +17,26 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
+## Live URL
+
+https://stream.paveltajdus.cz/
+
 ## API Endpoints
 
 - `POST /api/register` - Registrace (vrací kód)
-- `GET /api/stats` - Počet registrací
-- `GET /api/export` - Export všech registrací pro losování
+- `GET /api/stats?secret=ADMIN_SECRET` - Počet registrací
+- `GET /api/export?secret=ADMIN_SECRET` - Export emailů (jeden na řádek)
+- `GET /api/participants?secret=ADMIN_SECRET` - Export s jmény a kódy (JSON)
+- `GET /wheel` - Losovací kolo
+
+### Admin URLs (vyžadují ADMIN_SECRET)
+
+```
+https://stream.paveltajdus.cz/api/stats?secret=YOUR_SECRET
+https://stream.paveltajdus.cz/api/export?secret=YOUR_SECRET
+https://stream.paveltajdus.cz/api/participants?secret=YOUR_SECRET
+https://stream.paveltajdus.cz/wheel
+```
 
 ## Deploy
 
