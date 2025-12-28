@@ -346,6 +346,27 @@
             margin-bottom: 1.5rem;
         }
 
+        .registration-closed {
+            display: none;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .registration-closed.show {
+            display: block;
+        }
+
+        .registration-closed h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--amber);
+        }
+
+        .registration-closed p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
         .code-box {
             background: var(--bg);
             border: 2px solid var(--green);
@@ -580,6 +601,12 @@
                 <p>Kód ti přišel i na email. Při losování ho budeš potřebovat pro ověření.</p>
                 <p class="code-hint">Uvidíme se na streamu 29. 12. v 19:00</p>
             </div>
+
+            <div class="registration-closed" id="registrationClosed">
+                <h3>Registrace ukončena</h3>
+                <p>Registrace do soutěže byla ukončena 29. 12. 2025 ve 20:00.</p>
+                <p class="code-hint">Děkujeme všem za účast! Sleduj stream pro výsledky losování.</p>
+            </div>
         </section>
 
         <section class="links-section">
@@ -621,8 +648,26 @@
         updateCountdown();
         setInterval(updateCountdown, 1000);
 
+        // Registration deadline check
+        const registrationDeadline = new Date('2025-12-29T20:00:00+01:00').getTime();
         const form = document.getElementById('registrationForm');
+        const formHeader = document.querySelector('.form-header');
         const successMessage = document.getElementById('successMessage');
+        const registrationClosed = document.getElementById('registrationClosed');
+
+        function checkRegistrationDeadline() {
+            const now = new Date().getTime();
+            if (now > registrationDeadline) {
+                form.style.display = 'none';
+                formHeader.style.display = 'none';
+                registrationClosed.classList.add('show');
+                return true;
+            }
+            return false;
+        }
+
+        const isRegistrationClosed = checkRegistrationDeadline();
+
         const submitBtn = form.querySelector('.submit-btn');
 
         form.addEventListener('submit', async function(e) {
