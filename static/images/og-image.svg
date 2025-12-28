@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0c0c0c"/>
+  <rect x="400" y="215" width="400" height="200" rx="20" fill="#FF0000"/>
+  <polygon points="520,265 520,365 620,315" fill="#FFFFFF"/>
+  <text x="600" y="500" font-family="sans-serif" font-size="48" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Poslední Stream Roku 2025</text>
+  <text x="600" y="560" font-family="sans-serif" font-size="28" fill="#22c55e" text-anchor="middle">Vyhraj Bambu Lab A1 mini Combo!</text>
+</svg>

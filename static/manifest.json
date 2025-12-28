@@ -1,0 +1,16 @@
+{
+  "name": "Poslední Stream Roku 2025",
+  "short_name": "Stream 2025",
+  "description": "Přijď na poslední stream roku 2025 a vyhraj 3D tiskárnu Bambu Lab A1 mini Combo!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0c0c",
+  "theme_color": "#22c55e",
+  "icons": [
+    {
+      "src": "/static/images/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
