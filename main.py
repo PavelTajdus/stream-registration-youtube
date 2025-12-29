@@ -183,14 +183,99 @@ async def export(secret: str = None, x_admin_secret: str = Header(default=None))
 
 @app.get("/api/participants")
 async def participants(secret: str = None, x_admin_secret: str = Header(default=None)):
-    """Pro losovací kolo - export s kódy"""
+    """Pro losovací kolo - export s kódy (pouze nevýherci)"""
     token = secret or x_admin_secret
     if token != ADMIN_SECRET:
         raise HTTPException(status_code=401, detail="Unauthorized")
     conn = await get_db()
     try:
-        rows = await conn.fetch("SELECT email, name, code FROM registrations ORDER BY created_at")
+        rows = await conn.fetch(
+            "SELECT email, name, code FROM registrations WHERE is_winner = FALSE ORDER BY created_at"
+        )
         return [dict(r) for r in rows]
+    finally:
+        await conn.close()
+
+
+class MarkWinnerRequest(BaseModel):
+    email: EmailStr
+
+
+@app.post("/api/mark-winner")
+async def mark_winner(data: MarkWinnerRequest, secret: str = None, x_admin_secret: str = Header(default=None)):
+    """Označí účastníka jako výherce a vyřadí ho z dalšího losování"""
+    token = secret or x_admin_secret
+    if token != ADMIN_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    conn = await get_db()
+    try:
+        result = await conn.execute(
+            "UPDATE registrations SET is_winner = TRUE WHERE email = $1 AND is_winner = FALSE",
+            data.email
+        )
+
+        if result == "UPDATE 0":
+            raise HTTPException(status_code=404, detail="Účastník nenalezen nebo již je výherce")
+
+        return {"success": True, "message": f"{data.email} označen jako výherce"}
+    finally:
+        await conn.close()
+
+
+@app.post("/api/mark-no-show")
+async def mark_no_show(data: MarkWinnerRequest, secret: str = None, x_admin_secret: str = Header(default=None)):
+    """Označí účastníka jako výherce bez výhry (nedostavil se) a vyřadí ho z dalšího losování"""
+    token = secret or x_admin_secret
+    if token != ADMIN_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    conn = await get_db()
+    try:
+        result = await conn.execute(
+            "UPDATE registrations SET is_winner = TRUE, no_show = TRUE WHERE email = $1 AND is_winner = FALSE",
+            data.email
+        )
+
+        if result == "UPDATE 0":
+            raise HTTPException(status_code=404, detail="Účastník nenalezen nebo již je výherce")
+
+        return {"success": True, "message": f"{data.email} označen jako nedostavený"}
+    finally:
+        await conn.close()
+
+
+@app.get("/api/winners")
+async def get_winners(secret: str = None, x_admin_secret: str = Header(default=None)):
+    """Seznam všech výherců"""
+    token = secret or x_admin_secret
+    if token != ADMIN_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    conn = await get_db()
+    try:
+        rows = await conn.fetch(
+            "SELECT email, name, code FROM registrations WHERE is_winner = TRUE ORDER BY created_at"
+        )
+        return [dict(r) for r in rows]
+    finally:
+        await conn.close()
+
+
+@app.post("/api/reset-winners")
+async def reset_winners(secret: str = None, x_admin_secret: str = Header(default=None)):
+    """Resetuje všechny výherce - vrátí je zpět do losování"""
+    token = secret or x_admin_secret
+    if token != ADMIN_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    conn = await get_db()
+    try:
+        result = await conn.execute(
+            "UPDATE registrations SET is_winner = FALSE, no_show = FALSE WHERE is_winner = TRUE"
+        )
+        count = int(result.split()[-1]) if result else 0
+        return {"success": True, "message": f"Resetováno {count} výherců"}
     finally:
         await conn.close()
 

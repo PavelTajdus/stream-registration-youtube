@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Losovací kolo | Stream Soutěž 2025</title>
+    <title>Kolo štěstí | Stream Soutěž 2025</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
@@ -131,6 +131,20 @@
             color: var(--text);
         }
 
+        #resetBtn {
+            padding: 1rem;
+            font-size: 1.2rem;
+            background: var(--surface);
+            color: var(--red);
+            border: 1px solid var(--red);
+            line-height: 1;
+        }
+
+        #resetBtn:hover:not(:disabled) {
+            background: var(--red);
+            color: #fff;
+        }
+
         /* Winner Panel */
         .winner {
             margin-top: 40px;
@@ -192,6 +206,53 @@
 
         #revealCodeBtn:hover {
             border-color: var(--text-secondary);
+        }
+
+        #markWinnerBtn {
+            background: var(--amber);
+            color: #000;
+            padding: 0.875rem 2rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        #markWinnerBtn:hover:not(:disabled) {
+            background: #d97706;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        #markWinnerBtn.success {
+            background: var(--green);
+            color: #fff;
+        }
+
+        #markNoShowBtn {
+            background: var(--surface);
+            color: var(--red);
+            padding: 0.875rem 2rem;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            border: 1px solid var(--red);
+        }
+
+        #markNoShowBtn:hover:not(:disabled) {
+            background: var(--red);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        #markNoShowBtn.success {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red);
+        }
+
+        .winner-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
 
         .code {
@@ -374,7 +435,7 @@
     </div>
 
     <div id="app" class="hidden">
-        <h1 class="page-title">Losovací kolo</h1>
+        <h1 class="page-title">Kolo štěstí</h1>
         <p class="page-subtitle">Poslední Stream Roku 2025</p>
 
         <div class="wheel-container">
@@ -385,6 +446,7 @@
         <div class="controls">
             <button id="spinBtn">Roztočit!</button>
             <button id="reloadBtn">Načíst znovu</button>
+            <button id="resetBtn" title="Reset výherců">↺</button>
         </div>
 
         <div id="winner" class="winner hidden">
@@ -394,6 +456,10 @@
             <div class="code-section">
                 <button id="revealCodeBtn">Zobrazit ověřovací kód</button>
                 <div id="winnerCode" class="code hidden"></div>
+            </div>
+            <div class="winner-actions">
+                <button id="markWinnerBtn">Označit jako výherce</button>
+                <button id="markNoShowBtn">Nedostavil se</button>
             </div>
         </div>
 
@@ -430,6 +496,9 @@
         const spinBtn = document.getElementById('spinBtn');
         const reloadBtn = document.getElementById('reloadBtn');
         const revealCodeBtn = document.getElementById('revealCodeBtn');
+        const markWinnerBtn = document.getElementById('markWinnerBtn');
+        const markNoShowBtn = document.getElementById('markNoShowBtn');
+        const resetBtn = document.getElementById('resetBtn');
 
         // Login
         document.getElementById('loginBtn').addEventListener('click', tryLogin);
@@ -569,6 +638,13 @@
             document.getElementById('winner').classList.add('hidden');
             document.getElementById('winnerCode').classList.add('hidden');
             revealCodeBtn.classList.remove('hidden');
+            // Reset mark winner buttons
+            markWinnerBtn.disabled = false;
+            markWinnerBtn.textContent = 'Označit jako výherce';
+            markWinnerBtn.classList.remove('success');
+            markNoShowBtn.disabled = false;
+            markNoShowBtn.textContent = 'Nedostavil se';
+            markNoShowBtn.classList.remove('success');
 
             const sliceAngle = (2 * Math.PI) / participants.length;
 
@@ -621,9 +697,110 @@
             document.getElementById('winnerCode').classList.remove('hidden');
         }
 
+        async function markAsWinner() {
+            if (!currentWinner) return;
+
+            markWinnerBtn.disabled = true;
+            markNoShowBtn.disabled = true;
+            markWinnerBtn.textContent = 'Ukládám...';
+
+            try {
+                const res = await fetch(`/api/mark-winner?secret=${encodeURIComponent(secret)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: currentWinner.email }),
+                });
+
+                if (res.ok) {
+                    markWinnerBtn.textContent = '✓ Výherce uložen';
+                    markWinnerBtn.classList.add('success');
+                    // Reload participants to remove winner from wheel
+                    await loadParticipants();
+                } else {
+                    const error = await res.json();
+                    markWinnerBtn.textContent = 'Chyba: ' + (error.detail || 'Neznámá chyba');
+                    markWinnerBtn.disabled = false;
+                    markNoShowBtn.disabled = false;
+                }
+            } catch (e) {
+                console.error('Failed to mark winner:', e);
+                markWinnerBtn.textContent = 'Chyba připojení';
+                markWinnerBtn.disabled = false;
+                markNoShowBtn.disabled = false;
+            }
+        }
+
+        async function markAsNoShow() {
+            if (!currentWinner) return;
+
+            markNoShowBtn.disabled = true;
+            markWinnerBtn.disabled = true;
+            markNoShowBtn.textContent = 'Ukládám...';
+
+            try {
+                const res = await fetch(`/api/mark-no-show?secret=${encodeURIComponent(secret)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: currentWinner.email }),
+                });
+
+                if (res.ok) {
+                    markNoShowBtn.textContent = '✓ Nedostavil se';
+                    markNoShowBtn.classList.add('success');
+                    // Reload participants to remove from wheel
+                    await loadParticipants();
+                } else {
+                    const error = await res.json();
+                    markNoShowBtn.textContent = 'Chyba: ' + (error.detail || 'Neznámá chyba');
+                    markNoShowBtn.disabled = false;
+                    markWinnerBtn.disabled = false;
+                }
+            } catch (e) {
+                console.error('Failed to mark no-show:', e);
+                markNoShowBtn.textContent = 'Chyba připojení';
+                markNoShowBtn.disabled = false;
+                markWinnerBtn.disabled = false;
+            }
+        }
+
+        async function resetWinners() {
+            if (!confirm('Opravdu chcete resetovat všechny výherce? Všichni budou vráceni do losování.')) {
+                return;
+            }
+
+            resetBtn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/reset-winners?secret=${encodeURIComponent(secret)}`, {
+                    method: 'POST',
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    alert(data.message);
+                    await loadParticipants();
+                } else {
+                    const error = await res.json();
+                    alert('Chyba: ' + (error.detail || 'Neznámá chyba'));
+                }
+            } catch (e) {
+                console.error('Failed to reset winners:', e);
+                alert('Chyba připojení');
+            } finally {
+                resetBtn.disabled = false;
+            }
+        }
+
         spinBtn.addEventListener('click', spin);
         reloadBtn.addEventListener('click', loadParticipants);
         revealCodeBtn.addEventListener('click', revealCode);
+        markWinnerBtn.addEventListener('click', markAsWinner);
+        markNoShowBtn.addEventListener('click', markAsNoShow);
+        resetBtn.addEventListener('click', resetWinners);
 
         drawWheel();
     </script>
